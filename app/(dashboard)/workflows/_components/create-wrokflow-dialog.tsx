@@ -33,10 +33,10 @@ const CreateWorkflowDialog = (props : Props) => {
 
         toast.success("Workflow created", {id: "create-workflow"})
 
-    }, onError: () => {
+    }, onError: (e) => {
         
         toast.error("Failed to create workflow", {id: "create-workflow"})
-
+        console.log(e)
     } })
 
     const handleOnSubmit = React.useCallback((values: z.infer<typeof createWorkflowSchema>) => {

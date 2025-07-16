@@ -8,7 +8,7 @@ export const createFlowNode = (nodeType: TaskType, postion?: {x:number, y:number
         dragHandle: ".drag-handle",
         data: {
             type: nodeType,
-            input: {}
+            inputs: {}
         },
         position: postion ?? {x : 0, y: 0}
     }

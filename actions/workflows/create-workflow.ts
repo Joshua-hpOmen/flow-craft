@@ -1,11 +1,11 @@
 "use server"
 
 import { db } from "@/lib/prisma";
-import { createWorkflowSchema } from "@/schema/workflows"
+import { createWorkflowSchema } from "@/schema/workflows";
 import { WorkflowStatus } from "@/types/workflow";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import z from "zod"
+import z from "zod";
 
 export const createWorkFlow = async ( form: z.infer<typeof createWorkflowSchema> ) => {
     const {success, data} = createWorkflowSchema.safeParse(form);
@@ -21,6 +21,5 @@ export const createWorkFlow = async ( form: z.infer<typeof createWorkflowSchema>
     })
 
     if(!result) throw new Error("failed to create workflow");
-
     redirect(`/workflow/editor/${result.id}`)
 }

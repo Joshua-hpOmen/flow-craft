@@ -23,6 +23,11 @@ const DeleteWorkflowDialog = (props: Props) => {
         toast.error("Failed to delete workflow", {id: "delete-workflow"})
     }})
 
+    const handleDelete = () => {
+        toast.loading("Deleting workflow...", {id: "delete-workflow"})
+        deleteMutation.mutate(props.workflowId)
+    }
+
   return (
     <AlertDialog open={props.open} onOpenChange={props.setOpen}>
 
@@ -36,7 +41,9 @@ const DeleteWorkflowDialog = (props: Props) => {
                     If you delete this workflow, you will not be able to recover it.
                     <div className='flex flex-col py-4 gap-2'>
                         <p>If you are sure, enter <b>{props.workflowname}</b> to confirm:</p>
-                        <Input value={confirmText} onChange={e => setConfirmText(e.target.value)}/>
+                        <Input value={confirmText} onChange={e => setConfirmText(e.target.value)} onKeyDown={e => {
+                            if(e.key === "Enter") handleDelete()
+                        }}/>
                     </div>
 
                 </AlertDialogDescription>
@@ -47,11 +54,8 @@ const DeleteWorkflowDialog = (props: Props) => {
 
                 <AlertDialogCancel onClick={() => setConfirmText("")}>Cancel</AlertDialogCancel>
                 
-                <AlertDialogAction disabled={confirmText !== props.workflowname || deleteMutation.isPending} className='bg-destructive text-white hover:bg-destructive/90' onClick={e => {
-                    e.stopPropagation();
-                    toast.loading("Deleting workflow...", {id: "delete-workflow"})
-                    deleteMutation.mutate(props.workflowId)
-                }}>
+                <AlertDialogAction disabled={confirmText !== props.workflowname || deleteMutation.isPending} className='bg-destructive text-white hover:bg-destructive/90' 
+                    onClick={e => {e.stopPropagation(); handleDelete()}}>
                     Delete
                 </AlertDialogAction>
 
