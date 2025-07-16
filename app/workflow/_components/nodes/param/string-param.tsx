@@ -20,7 +20,6 @@ const StringParam = (props: Props) => {
         setInternalVal(props.value)
     }, [props.value])
 
-    
     let Component : React.FC<any> = Input;
     if(props.param.variant === "textarea"){ Component = Textarea}
   return (

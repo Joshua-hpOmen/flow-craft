@@ -115,7 +115,7 @@ const FlowEditor = (props: Props) => {
 
         return !detectedCycle
 
-    }, [node])
+    }, [node, edge])
 
   return (
     <main className='h-full w-full'>

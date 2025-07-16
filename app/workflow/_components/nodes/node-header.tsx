@@ -25,7 +25,7 @@ const NodeHeader = (props: Props) => {
             <div className="flex gap-1 items-center">
                 {task.isEntryPoint && <Badge>Entry point</Badge>}
                 <Badge className='gap-2 flex items-center text-xs'>
-                    <CoinsIcon size={16}/> Todo
+                    <CoinsIcon size={16}/> {task.credits}
                 </Badge>
                 {!task.isEntryPoint && <>
                     <Button variant={"ghost"} size={"icon"} onClick={(e) => { e.stopPropagation(); console.log("Heelllooo"); deleteElements({ nodes: [{id: props.nodeId}] }) }}>
