@@ -3,10 +3,12 @@ import StringParam from './param/string-param'
 import { useReactFlow } from '@xyflow/react'
 import { AppNode } from '@/types/app-node'
 import React from 'react'
+import BrowserInstParam from './param/broswer-inst-param'
 
 type Props = {
     param: TaskParam,
-    nodeId: string
+    nodeId: string,
+    disabled: boolean
 }
 
 const NodeParamField = (props: Props) => {
@@ -25,7 +27,9 @@ const NodeParamField = (props: Props) => {
 
     switch (props.param.type) {
         case TaskParamType.STRING:
-            return <StringParam param={props.param} value={value} updateNodeParamValue={updateNodeParamValue}/>        
+            return <StringParam param={props.param} value={value} updateNodeParamValue={updateNodeParamValue} disabled={props.disabled}/>    
+        case TaskParamType.BROWSER_INSTANCE:
+            return <BrowserInstParam param={props.param} updateNodeParamValue={updateNodeParamValue}/>    
         default:
             <div className="w-full">
                 <p className="text-xs text-muted-foreground">Not implemented</p>
