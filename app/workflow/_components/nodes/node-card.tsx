@@ -13,7 +13,6 @@ const NodeCard = (props: Props) => {
     const {getNode, setCenter} = useReactFlow();
     const {invalidInputs} = useFlowValidation();
 
-    console.log("🟢This is my nodeID", invalidInputs)
     const hasInvalidInputs = invalidInputs.some(node => node.nodeId === props.nodeId)
 
   return (

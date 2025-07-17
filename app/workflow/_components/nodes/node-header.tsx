@@ -28,7 +28,7 @@ const NodeHeader = (props: Props) => {
                     <CoinsIcon size={16}/> {task.credits}
                 </Badge>
                 {!task.isEntryPoint && <>
-                    <Button variant={"ghost"} size={"icon"} onClick={(e) => { e.stopPropagation(); console.log("Heelllooo"); deleteElements({ nodes: [{id: props.nodeId}] }) }}>
+                    <Button variant={"ghost"} size={"icon"} onClick={(e) => { e.stopPropagation(); deleteElements({ nodes: [{id: props.nodeId}] }) }}>
                         <TrashIcon size={12}/>
                     </Button>
                     <Button variant={"ghost"} size={"icon"} onClick={(e) => {

@@ -20,8 +20,8 @@ model Workflow {
   definition String
   status     String
 
-  lastRunAt DateTime?
-  lastRunId String?
+  lastRunAt     DateTime?
+  lastRunId     String?
   lastRunStatus String?
 
   createdAt DateTime @default(now())
@@ -41,6 +41,8 @@ model WorkflowExecution {
   createdAt       DateTime         @default(now())
   startedAt       DateTime?
   completedAt     DateTime?
+  creditsConsumed Int @default(0)
+
   executionPhases ExecutionPhase[]
 
   workflow Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)

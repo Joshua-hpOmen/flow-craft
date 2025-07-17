@@ -19,12 +19,12 @@ export const ExtractPageFromElementTask = {
             type: TaskParamType.STRING,
             required: true,
         }
-    ],
+    ] as const,
     outputs: [
         {
             name: "Extracted text",
             type: TaskParamType.STRING
         },
-    ],
+    ] as const,
     credits: 2
 } satisfies WorkflowTask
