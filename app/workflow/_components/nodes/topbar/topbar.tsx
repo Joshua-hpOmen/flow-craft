@@ -10,7 +10,8 @@ import ExecuteBtn from './execute-btn'
 type Props = {
     title: string,
     subtitle?: string,
-    workflowId: string
+    workflowId: string,
+    hideBtns?: boolean
 }
 
 const Topbar = (props: Props) => {
@@ -33,8 +34,12 @@ const Topbar = (props: Props) => {
 
         </div>
         <div className='flex gap-1 flex-1 justify-end'>
-            <ExecuteBtn workflowId={props.workflowId}/>
-            <Savebtn workflowId={props.workflowId}/>
+            {
+                !props.hideBtns && <>
+                    <ExecuteBtn workflowId={props.workflowId}/>
+                    <Savebtn workflowId={props.workflowId}/>
+                </>
+            }
         </div>
     </header>
   )
