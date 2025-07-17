@@ -1,6 +1,6 @@
 import { AppNode, AppNodeMissingInputs } from "@/types/app-node";
 import { WorkflowExecutionPlan, WorkflowExecutionPlanPhase } from "@/types/workflow";
-import { Edge, getIncomers } from "@xyflow/react";
+import { Edge } from "@xyflow/react";
 import { TaskRegistry } from "./task/registry";
 
 export enum FlowToExecutionPlanValidationError {
@@ -16,6 +16,17 @@ type FlowToExecutionPlanType = {
     }
 }
 
+
+const getIncomers =  (node: AppNode, nodes: AppNode[], edges: Edge[]  ) => {
+    if(!node.id)return [];
+    const incomersId = new Set();
+    edges.forEach(edge => {
+        if(node.id === edge.target) incomersId.add(edge.source)
+    })
+
+    return nodes.filter(nodeInst => incomersId.has(nodeInst.id) )
+}
+
 const getInvalidInputs = (node:AppNode, edges: Edge[], planned: Set<string>) => {
     const invalidInputs = [];
     const inputs = TaskRegistry[node.data.type].inputs;
@@ -24,7 +35,7 @@ const getInvalidInputs = (node:AppNode, edges: Edge[], planned: Set<string>) => 
 
     for(const input of inputs){
         const inputValue = node.data.inputs[input.name];
-        const inputValueProvided = inputValue.length > 0;
+        const inputValueProvided = inputValue !== undefined && inputValue.length > 0;
 
         if(inputValueProvided) continue;
 
@@ -40,7 +51,6 @@ const getInvalidInputs = (node:AppNode, edges: Edge[], planned: Set<string>) => 
         }
 
         invalidInputs.push(input.name);
-
     }
     return invalidInputs
 }

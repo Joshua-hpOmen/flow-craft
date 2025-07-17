@@ -1,3 +1,4 @@
+import useFlowValidation from '@/components/hooks/use-flow-validation'
 import { cn } from '@/lib/utils'
 import { useReactFlow } from '@xyflow/react'
 import React from 'react'
@@ -9,10 +10,14 @@ type Props = {
 }
 
 const NodeCard = (props: Props) => {
-    const {getNode, setCenter} = useReactFlow()
+    const {getNode, setCenter} = useReactFlow();
+    const {invalidInputs} = useFlowValidation();
+
+    console.log("🟢This is my nodeID", invalidInputs)
+    const hasInvalidInputs = invalidInputs.some(node => node.nodeId === props.nodeId)
 
   return (
-    <div className={cn('rounded-md cursor-pointer bg-background border-2 border-separate w-[420px] text-xs  flex flex-col gap-1', props.isSelected && "border-primary")} onDoubleClick={() => {
+    <div className={cn('rounded-md cursor-pointer bg-background border-2 border-separate w-[420px] text-xs  flex flex-col gap-1', props.isSelected && "border-primary", hasInvalidInputs && "border-red-700 border-2")} onDoubleClick={() => {
         const node = getNode(props.nodeId)
         if(!node) return
         const {position, measured} = node;

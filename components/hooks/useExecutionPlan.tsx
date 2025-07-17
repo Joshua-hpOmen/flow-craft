@@ -1,3 +1,4 @@
+"use client"
 import { flowToExecutionPlan, FlowToExecutionPlanValidationError } from "@/lib/workflow/executionPlan";
 import { AppNode, AppNodeMissingInputs } from "@/types/app-node";
 import { useReactFlow } from "@xyflow/react";
@@ -11,22 +12,22 @@ const useExecutionPlan = () => {
 
     const handleError = React.useCallback((error: {
             type: FlowToExecutionPlanValidationError;
-            invalidElement?: AppNodeMissingInputs[];
+            invalidElements?: AppNodeMissingInputs[];
         }) => {
 
-            switch (error.type) {
-                case FlowToExecutionPlanValidationError.NO_ENTRY_POINT:
-                    toast.error("No entry point found")
-                    break;
-                case FlowToExecutionPlanValidationError.INVALID_INPUTS:
-                    toast.error("Not all inputs values are defined");
-                    setInvalidInputs(error.invalidElement || [])
-                    break;
-                default:
-                    toast.error("Something went wrong");
-            }
+        switch (error.type) {
+            case FlowToExecutionPlanValidationError.NO_ENTRY_POINT:
+                toast.error("No entry point found")
+                break;
+            case FlowToExecutionPlanValidationError.INVALID_INPUTS:
+                toast.error("Not all inputs values are defined");
+                setInvalidInputs(error.invalidElements || [])
+                break;
+            default:
+                toast.error("Something went wrong");
+        }
 
-        }, [setInvalidInputs])
+    }, [setInvalidInputs])
 
     const generateExceutionPlan = React.useCallback(() => {
         const {nodes, edges} = toObject();
@@ -34,6 +35,7 @@ const useExecutionPlan = () => {
 
         if(result.error){
             handleError(result.error)
+            console.log(result.error)
             return null
         }
 
