@@ -1,15 +1,17 @@
 import { AppNode } from "@/types/app-node";
 import { Environment, ExcecutionEnvironment } from "@/types/executor";
+import { LogCollector } from "@/types/log";
+import { TaskParamType } from "@/types/task";
 import { ExecutionPhaseStatus, WorkflowExecutionStatus } from "@/types/workflow";
+import { Edge } from "@xyflow/react";
 import { revalidatePath } from "next/cache";
+import { Browser, Page } from "puppeteer";
 import "server-only";
 import { ExecutionPhase, Workflow } from "../generated/prisma";
+import { createLogCollector } from "../log";
 import { db } from "../prisma";
 import { ExecuterRegistry } from "./executor/registry";
 import { TaskRegistry } from "./task/registry";
-import { TaskParamType } from "@/types/task";
-import { Browser, Page } from "puppeteer";
-import { Edge } from "@xyflow/react";
 
 const initializeWorkflowExecution = async (executionId:string, workflowId : string ) => {
     await db.workflowExecution.update({
@@ -44,7 +46,8 @@ const initializePhaseStatuses = async (execution: { workflow: Workflow, executio
     })
 }
 
-const finalizeWorkflowExecution = async  (executionId: string, workflowId: string, executionfailed: boolean, creditsConsumed: number) => {
+const finalizeWorkflowExecution = async  (executionId: string, workflowId: string, 
+    executionfailed: boolean, creditsConsumed: number) => {
 
     const finalStatus = executionfailed ? WorkflowExecutionStatus.FAILED : WorkflowExecutionStatus.COMPLETED
 
@@ -69,7 +72,8 @@ const finalizeWorkflowExecution = async  (executionId: string, workflowId: strin
 }
 
 
-const finalizePhase = async (phaseID: string, success: boolean, outputs: Record<string, string>) => {
+const finalizePhase = async (phaseID: string, success: boolean, outputs: Record<string, string>,
+    logCollector: LogCollector, creditsConsumed: number) => {
 
     const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED;
 
@@ -78,13 +82,21 @@ const finalizePhase = async (phaseID: string, success: boolean, outputs: Record<
         data: {
             completedAt: new Date(),
             status: finalStatus,
-            outputs: JSON.stringify(outputs)
+            outputs: JSON.stringify(outputs),
+            creditsConsumed,
+            executionLog: {
+                createMany: {
+                    data: logCollector.getAll().map(log => ({message: log.message, logLevel: log.level, timestamp: log.timestamp}))
+                }
+            }
         }
     })
+
+    
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const createExecutionEnvironment = (node: AppNode, env: Environment) : ExcecutionEnvironment<any> => {
+const createExecutionEnvironment = (node: AppNode, env: Environment, logCollector: LogCollector) : ExcecutionEnvironment<any> => {
     return {
         getInput: (name: string) => env.phases[node.id]?.inputs[name],
         setOutput: (name: string, value: string) => {
@@ -94,16 +106,18 @@ const createExecutionEnvironment = (node: AppNode, env: Environment) : Excecutio
         getBrowser: () => env.broswer,
         setBrowser: (browser: Browser) => (env.broswer = browser),
         getPage: () => env.page,
-        setPage: (page: Page) => env.page = page
+        setPage: (page: Page) => env.page = page,
+
+        log: logCollector
     }
 }
 
-const executePhase = async (phase: ExecutionPhase, node: AppNode, env: Environment): Promise<boolean> => {
+const executePhase = async (phase: ExecutionPhase, node: AppNode, env: Environment, logCollector: LogCollector): Promise<boolean> => {
     const runFn = ExecuterRegistry[node.data.type]
     if(!runFn) return false;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const execEnv: ExcecutionEnvironment<any> = createExecutionEnvironment(node, env)
+    const execEnv: ExcecutionEnvironment<any> = createExecutionEnvironment(node, env, logCollector)
 
     return await runFn(execEnv)
 }
@@ -136,7 +150,23 @@ const setupEnvironmentForPhase = (node: AppNode, env: Environment, edges: Edge[]
 
 }
 
+const decrementCredits = async (userId: string, amount: number, logCollector: LogCollector) => {
+    try {
+        await db.userBalance.update({
+            where: {userId, credits: { gte : amount}},
+            data: {credits: { decrement: amount }}
+
+        });
+        return true
+    } catch (error) {
+        console.error(error)
+        logCollector.error("Insufficient balance")
+        return false
+    }
+}
+
 const executeWorkflowPhase = async (phase: ExecutionPhase, env: Environment, edges: Edge[]) => {
+    const logCollector = createLogCollector()
     const startedAt = new Date();
     const node = JSON.parse(phase.node) as AppNode;
     setupEnvironmentForPhase(node, env, edges)
@@ -149,14 +179,16 @@ const executeWorkflowPhase = async (phase: ExecutionPhase, env: Environment, edg
         }
     })
 
-    const creditsRequired = TaskRegistry[node.data.type].credits
-    console.log(`Executing phase ${phase.name} with ${creditsRequired} credits required`)
-
-    const success = await executePhase(phase, node, env)
+    const creditsRequired = TaskRegistry[node.data.type].credits;
+    let success = await decrementCredits(phase.userId, creditsRequired, logCollector); 
+    const creditsConsumed = success ? creditsRequired : 0; 
+    if(success){
+        success = await executePhase(phase, node, env, logCollector)
+    }
     const outputs = env.phases[node.id].outputs
 
-    await finalizePhase(phase.id, success, outputs);
-    return { success }
+    await finalizePhase(phase.id, success, outputs, logCollector, creditsConsumed);
+    return { success, creditsConsumed }
 }
 
 const cleanUpEnv = async (env: Environment) => {
@@ -170,16 +202,18 @@ export const ExecuteWorkflow = async (executionId: string) => {
     if(!execution) throw new Error("Execution not found");
 
     const env: Environment = {phases: {}};
-    const edges = JSON.parse(execution.workflow.definition).edges as Edge[]
+    const edges = JSON.parse(execution.definition).edges as Edge[]
 
     await initializeWorkflowExecution(executionId, execution.workflowId)
     await initializePhaseStatuses(execution)
 
-    const creditsConsumed = 0;
+    
+    let creditsConsumed = 0;
     let executionFailed= false;
     for (const phase of execution.executionPhases){
         const phaseExecution = await executeWorkflowPhase(phase, env, edges)
 
+        creditsConsumed+= phaseExecution.creditsConsumed
         if(!phaseExecution.success){
             executionFailed = true;
             break;
@@ -187,9 +221,7 @@ export const ExecuteWorkflow = async (executionId: string) => {
     }
 
     await finalizeWorkflowExecution(executionId, execution.workflowId, executionFailed, creditsConsumed)
-
-
     await cleanUpEnv(env)
-
+ 
     revalidatePath("/workflow/runs")
 }

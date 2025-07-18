@@ -53,6 +53,7 @@
     "postcss": "^8.5.6",
     "puppeteer": "^24.14.0",
     "react": "^19.0.0",
+    "react-countup": "^6.5.3",
     "react-day-picker": "^9.7.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.58.1",

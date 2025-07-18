@@ -6,5 +6,8 @@ export const GetWorkflowPhaseDetails = async (phaseId: string) => {
     const {userId} = await auth();
     if(!userId) throw new Error("unauthorised");
 
-    return db.executionPhase.findUnique({ where: { id: phaseId, execution: { userId } } })
+    return db.executionPhase.findUnique({ 
+        where: { id: phaseId, execution: { userId } },
+        include: { executionLog : { orderBy: { timestamp: "asc" } } }
+    })
 }

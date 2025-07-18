@@ -1,18 +1,22 @@
 "use client"
  
 import { getWorkfloExecutionWithPhases } from '@/actions/workflows/get-workflow-execution-with-phases'
-import { WorkflowExecutionStatus } from '@/types/workflow'
+import { GetWorkflowPhaseDetails } from '@/actions/workflows/get-workflow-phase-details'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { DatestoDurationString } from '@/lib/helper/dates'
+import { GetPhasesTotalCoset } from '@/lib/helper/phases'
+import { ExecutionPhaseStatus, WorkflowExecutionStatus } from '@/types/workflow'
 import { useQuery } from '@tanstack/react-query'
 import { formatDistanceToNow } from 'date-fns'
 import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2, Menu, WorkflowIcon, X } from 'lucide-react'
-import ExecutionLabel from './execution-label'
-import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { DatestoDurationString } from '@/lib/helper/dates'
-import { GetPhasesTotalCoset } from '@/lib/helper/phases'
 import React from 'react'
-import { GetWorkflowPhaseDetails } from '@/actions/workflows/get-workflow-phase-details'
+import ExecutionLabel from './execution-label'
+import ParammeterViewer from './parammeter-viewer'
+import LogViewer from './log-viewer'
+import PhaseStatusBadge from './phase-status-badge'
+import ReactCountupWrapper from '@/components/global/react-countup-wrapper'
 
 type Props = {
     execution : Awaited<ReturnType<typeof getWorkfloExecutionWithPhases>>
@@ -21,6 +25,7 @@ type Props = {
 function ExecutionViewer(props: Props) {
     const [selectedPhase, setSelectedPhase] = React.useState<string | null>(null)
     const [open, setOpen] = React.useState(true)
+    
     const query = useQuery({
         queryKey: ["execution", props.execution?.id],
         initialData: props.execution,
@@ -33,7 +38,30 @@ function ExecutionViewer(props: Props) {
         enabled: selectedPhase !== null,
         queryFn: () => GetWorkflowPhaseDetails(selectedPhase!)
     })
-    const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING    
+    const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
+    
+    React.useEffect(() => {
+        const findRunningPhase = () => {
+            if(!isRunning && !selectedPhase){
+                if(!query.data?.executionPhases) return
+                const phaseToSelect = query.data.executionPhases.find(phase => 
+                    phase.status as ExecutionPhaseStatus  === "FAILED")
+
+                setSelectedPhase(phaseToSelect ? 
+                    phaseToSelect.id : query.data.executionPhases[query.data.executionPhases.length - 1].id)
+                return
+            }
+
+            const currentRunningPhase = query.data?.executionPhases.find(phase => 
+                phase.status as ExecutionPhaseStatus === "RUNNING")
+
+            if(!currentRunningPhase) return
+
+            setSelectedPhase(currentRunningPhase.id)
+        }
+
+        findRunningPhase()
+    }, [query, isRunning, selectedPhase])
 
     const duration = DatestoDurationString(query.data?.completedAt, query.data?.startedAt)
     const creditsConsumed =    GetPhasesTotalCoset(query.data?.executionPhases || [])
@@ -55,7 +83,7 @@ function ExecutionViewer(props: Props) {
                     </span>}
                 />
                 <ExecutionLabel icon={ClockIcon} label={"Duration"} value={duration ? duration : <Loader2 className='animate-spin' size={20}/>} />
-                <ExecutionLabel icon={CoinsIcon} label={"Credits consumed"} value={creditsConsumed} />
+                <ExecutionLabel icon={CoinsIcon} label={"Credits consumed"} value={<ReactCountupWrapper value={creditsConsumed}/>} />
                 
             </div>
 
@@ -83,9 +111,7 @@ function ExecutionViewer(props: Props) {
                             <p className='font-semibold'>{phase.name}</p>
                         </div>
 
-                        <p className='text-xs text-muted-foreground'>
-                            {phase.status}
-                        </p>
+                        <PhaseStatusBadge status={phase.status as ExecutionPhaseStatus}/>
 
                     </Button>
                 ))}
@@ -95,8 +121,57 @@ function ExecutionViewer(props: Props) {
             <Menu onClick={() => setOpen(true)}/>
         </div>}
 
-        <div>
-            <pre>{JSON.stringify(phaseDetails.data, null, 4)}</pre>
+        <div className='flex w-full h-full px-4'>
+            {isRunning && <div className='flex items-center flex-col gap-2 justify-center h-full w-full'>
+                <p className="font-bold">Run is in progress, please wait</p>
+            </div>}
+
+            {!isRunning && !selectedPhase && (
+                <div className='flex items-center flex-col gap-2 justify-center h-full w-full'>
+                    <div className='flex flex-col gap-1 text-center'>
+                        <p className="font-bold ">No phase selected</p>
+                        <p className='text-sm text-muted-foreground'>Select a phase to view details</p>
+                    </div>
+                </div>
+            )}
+
+            {!isRunning && selectedPhase && phaseDetails.data && (
+                <div className='flex flex-col py-4 container gap-4 overflow-auto'>
+
+                    <div className="flex gap-2 items-center">
+
+                        <Badge variant={"outline"} className='space-x-4'>
+
+                            <div className='flex gap-1 items-center'>
+                                <CoinsIcon size={18} className='stroke-muted-foreground'/> 
+                                <span>Credits</span>
+                            </div>
+
+                            <span>{phaseDetails.data.creditsConsumed}</span>
+
+                        </Badge>
+
+                        <Badge variant={"outline"} className='space-x-4'>
+
+                            <div className='flex gap-1 items-center'>
+                                <ClockIcon size={18} className='stroke-muted-foreground'/> 
+                                <span>Duration</span>
+                            </div>
+
+                            <span>{DatestoDurationString(phaseDetails.data.completedAt, phaseDetails.data.startedAt) || "-"}</span>
+
+                        </Badge>
+
+                    </div>
+
+                    <ParammeterViewer title="Inputs" subtitle="Inputs used for this phase" paramJSON={phaseDetails.data.inputs}/>
+
+                    <ParammeterViewer title="Outputs" subtitle="Outputs generated by this phase" paramJSON={phaseDetails.data.outputs}/>
+
+                    <LogViewer logs={phaseDetails.data.executionLog} />
+                </div>
+            )}
+
         </div>
     </div>
   )

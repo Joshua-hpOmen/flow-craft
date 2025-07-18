@@ -7,8 +7,9 @@ export const PageToHTMLExecutor = async (env: ExcecutionEnvironment<typeof PageT
         env.setOutput("HTML", html)
 
         return true
-    } catch (error) {
-        console.error(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+        env.log.error(error.message);
         return false
     }
 }

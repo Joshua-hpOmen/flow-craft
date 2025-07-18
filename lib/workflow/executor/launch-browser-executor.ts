@@ -8,14 +8,19 @@ export const LaunchBrowserExecutor = async (env: ExcecutionEnvironment<typeof La
         const browser = await puppeteer.launch({
             headless: true //for testing purposes
         })
+
+        env.log.info("Browser statrted successfully")
         env.setBrowser(browser);
         const page = await browser.newPage();
         await page.goto(websiteUrl);
 
         env.setPage(page)
+        env.log.info(`Opened page at: ${websiteUrl}`)
+
         return true
-    } catch (error) {
-        console.error(error);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error:any) {
+        env.log.error(error);
         return false
     }
 }
