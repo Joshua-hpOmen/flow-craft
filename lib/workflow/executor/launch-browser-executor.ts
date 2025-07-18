@@ -14,6 +14,7 @@ export const LaunchBrowserExecutor = async (env: ExcecutionEnvironment<typeof La
         const page = await browser.newPage();
         await page.goto(websiteUrl);
 
+        if(!page) {env.log.error("Not valid page");return false}
         env.setPage(page)
         env.log.info(`Opened page at: ${websiteUrl}`)
 

@@ -76,7 +76,10 @@ function ExecutionViewer(props: Props) {
 
             <div className="py-4 px-2">
 
-                <ExecutionLabel icon={CircleDashedIcon} label={"Status"} value={query.data?.status} />
+                <ExecutionLabel icon={CircleDashedIcon} label={"Status"} value={<div className='font-semibold capitalize flex gap-2 items-center'>
+                    <PhaseStatusBadge status={query.data?.status as ExecutionPhaseStatus} />
+                    <span>{query.data?.status}</span>
+                </div>} />
                 <ExecutionLabel icon={CalendarIcon} label={"Started Aat"} value={
                     <span className='lowercase'>
                         {query.data?.startedAt ? formatDistanceToNow(new Date(query.data.startedAt)) : "-"} 

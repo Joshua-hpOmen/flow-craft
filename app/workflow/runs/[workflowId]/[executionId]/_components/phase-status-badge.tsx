@@ -2,7 +2,7 @@ import { ExecutionPhaseStatus } from '@/types/workflow'
 import { CircleCheckIcon, CircleDashedIcon, CircleXIcon, Loader2Icon } from 'lucide-react'
 
 type Props = {
-    status: ExecutionPhaseStatus
+    status: ExecutionPhaseStatus 
 }
 
 const PhaseStatusBadge = (props: Props) => {

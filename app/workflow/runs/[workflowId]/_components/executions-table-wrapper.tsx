@@ -1,11 +1,12 @@
 import { getWorkflowExecutions } from '@/actions/workflows/get-workflow-executions'
 import { InboxIcon } from 'lucide-react'
+import ExecutionsTable from './execution-table'
 
 type Props = {
     workflowId: string
 }
 
-const ExecutionsTable = async (props: Props) => {
+const ExecutionsTableWrapper = async (props: Props) => {
     const executions = await getWorkflowExecutions(props.workflowId)
     if(!executions) return <div>No data</div>
 
@@ -33,8 +34,10 @@ const ExecutionsTable = async (props: Props) => {
     }
 
   return (
-    <div>ExecutionsTable</div>
+    <div className='container py-6 w-full mx-auto'>
+        <ExecutionsTable workflowId={props.workflowId} initialData={executions}/>
+    </div>
   )
 }
 
-export default ExecutionsTable
+export default ExecutionsTableWrapper

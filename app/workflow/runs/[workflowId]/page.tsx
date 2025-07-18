@@ -1,7 +1,7 @@
 import React from 'react'
 import Topbar from '../../_components/nodes/topbar/topbar';
-import ExecutionsTable from './_components/executions-table';
 import { Skeleton } from '@/components/ui/skeleton';
+import ExecutionsTableWrapper from './_components/executions-table-wrapper';
 
 type Props = {
     params: Promise<{workflowId: string}>
@@ -19,7 +19,7 @@ const page = async (props: Props) => {
                 [1, 2, 3, 4].map(i => <Skeleton key={i} className='h-32 w-full'/>)
             }
         </div>}>
-            <ExecutionsTable workflowId={params.workflowId}/>
+            <ExecutionsTableWrapper workflowId={params.workflowId}/>
         </React.Suspense>
     </div>
   )
