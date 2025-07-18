@@ -3,12 +3,13 @@ import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { WorkflowStatus } from '@/types/workflow'
-import { Workflow } from '@prisma/client'
 import { FileTextIcon, PlayIcon, ShuffleIcon } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import WorkFlowActions from './workflow-actions'
 import RunBtn from './run-btn'
+import ScheduleSection from './schedule-section'
+import { Workflow } from '@/lib/generated/prisma'
 
 type Props = {
     workflow: Workflow
@@ -35,6 +36,7 @@ const WorkflowCard = (props: Props) => {
                         <Link href={`/workflow/editor/${props.workflow.id}`} className='flex items-center hover:underline'>{props.workflow.name}</Link>
                         {props.workflow.status === WorkflowStatus.DRAFT && <span className='ml-2 px-0.5 text-xs font-medium bg-red-100 text-red-800 rounded-full'>Draft</span>}
                     </h3>
+                    <ScheduleSection workflowId={props.workflow.id} isDraft={props.workflow.status === WorkflowStatus.DRAFT} creditsCost={props.workflow.creditsCost}/>
                 </div>
 
             </div>
