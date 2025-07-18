@@ -18,7 +18,13 @@ const ExecuteBtn = (props: Props) => {
   const mutation = useMutation({
     mutationFn: runWorkflow,
     onSuccess: () => { toast.success("Execution started", {id: "workflow-execution"}) },
-    onError: () => { toast.error("Something went wrong", {id: "workflow-execution"}) }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onError: (e:any) => {
+      if(e.digest.split("NEXT_REDIRECT").length > 1){
+          toast.success("Execution started", {id: "workflow-execution"})
+      }else{
+        toast.error("Something went wrong", {id: "workflow-execution"}) }
+      } 
   });
 
   return (

@@ -4,7 +4,7 @@ import { db } from "@/lib/prisma"
 import { ExecuteWorkflow } from "@/lib/workflow/execute-workflow"
 import { flowToExecutionPlan } from "@/lib/workflow/executionPlan"
 import { TaskRegistry } from "@/lib/workflow/task/registry"
-import { ExecutionPhaseStatus, WokrflowExecutionTrigger, WorkflowExecutionPlan, WorkflowExecutionStatus } from "@/types/workflow"
+import { ExecutionPhaseStatus, WokrflowExecutionTrigger, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowStatus } from "@/types/workflow"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 
@@ -20,15 +20,24 @@ export const runWorkflow = async (form: Form) => {
 
     const workflow = await db.workflow.findUnique({where : {id: form.workflowId, userId}});
     if(!workflow) throw new Error("workflow was not found");
+    let executionPlan : WorkflowExecutionPlan;
+    let workflowDefinition = form.flowDefinition
 
-    if(!form.flowDefinition) throw new Error("flow definition is not defined");
+    if(workflow.status === WorkflowStatus.PUBLISHED){
+        if(!workflow.executionPlan) throw new Error("workflow execution-plan is not defined");
+        executionPlan = JSON.parse(workflow.executionPlan)
+        workflowDefinition = workflow.definition
+    }else{
 
-    const flow = JSON.parse(form.flowDefinition);
-    const result = flowToExecutionPlan(flow.nodes, flow.edges);
-    if(result.error) throw new Error("flow definition is not valid");
-    if(!result.executionPlan) throw new Error("no execution plan generated");
+        if(!form.flowDefinition) throw new Error("flow definition is not defined");
+    
+        const flow = JSON.parse(form.flowDefinition);
+        const result = flowToExecutionPlan(flow.nodes, flow.edges);
+        if(result.error) throw new Error("flow definition is not valid");
+        if(!result.executionPlan) throw new Error("no execution plan generated");
 
-    const executionPlan: WorkflowExecutionPlan  = result.executionPlan
+        executionPlan = result.executionPlan
+    }    
 
     const execution = await db.workflowExecution.create({
         data: {
@@ -37,7 +46,7 @@ export const runWorkflow = async (form: Form) => {
             status: WorkflowExecutionStatus.PENDING,
             startedAt: new Date(),
             trigger: WokrflowExecutionTrigger.MANUAL,
-            definition: form.flowDefinition,
+            definition: workflowDefinition,
             executionPhases: {
                 create: executionPlan.flatMap(phase => { return (
                     phase.nodes.flatMap(node => {

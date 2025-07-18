@@ -4,7 +4,6 @@ import { LogCollector } from "@/types/log";
 import { TaskParamType } from "@/types/task";
 import { ExecutionPhaseStatus, WorkflowExecutionStatus } from "@/types/workflow";
 import { Edge } from "@xyflow/react";
-import { revalidatePath } from "next/cache";
 import { Browser, Page } from "puppeteer";
 import "server-only";
 import { ExecutionPhase, Workflow } from "../generated/prisma";
@@ -223,5 +222,4 @@ export const ExecuteWorkflow = async (executionId: string) => {
     await finalizeWorkflowExecution(executionId, execution.workflowId, executionFailed, creditsConsumed)
     await cleanUpEnv(env)
  
-    revalidatePath("/workflow/runs")
 }

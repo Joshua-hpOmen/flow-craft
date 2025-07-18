@@ -32,10 +32,16 @@ const CreateWorkflowDialog = (props : Props) => {
     const {mutate, isPending} = useMutation({ mutationFn: createWorkFlow, onSuccess: () => {
 
         toast.success("Workflow created", {id: "create-workflow"})
-
-    }, onError: (e) => {
         
-        toast.error("Failed to create workflow", {id: "create-workflow"})
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }, onError: (e: any) => {
+        
+        if(e.digest.split("NEXT_REDIRECT").length > 1){
+            toast.success("Workflow created", {id: "create-workflow"})
+        }else{
+            toast.error("Failed to create workflow", {id: "create-workflow"})
+        }
+        console.log(JSON.stringify(e, null, 4))
     } })
 
     const handleOnSubmit = React.useCallback((values: z.infer<typeof createWorkflowSchema>) => {

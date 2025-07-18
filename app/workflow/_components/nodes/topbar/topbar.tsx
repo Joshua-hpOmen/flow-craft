@@ -7,12 +7,15 @@ import React from 'react'
 import Savebtn from './savebtn'
 import ExecuteBtn from './execute-btn'
 import NavigateTabs from './navigate-tabs'
+import PublishBtn from './publish-btn'
+import UnpublishBtn from './unpublish'
 
 type Props = {
     title: string,
     subtitle?: string,
     workflowId: string,
-    hideBtns?: boolean
+    hideBtns?: boolean,
+    isPublished?: boolean
 }
 
 const Topbar = (props: Props) => {
@@ -41,7 +44,12 @@ const Topbar = (props: Props) => {
             {
                 !props.hideBtns && <>
                     <ExecuteBtn workflowId={props.workflowId}/>
-                    <Savebtn workflowId={props.workflowId}/>
+                    {!props.isPublished ?
+                        <>
+                            <Savebtn workflowId={props.workflowId}/>
+                            <PublishBtn workflowId={props.workflowId}/>
+                        </> : <UnpublishBtn workflowId={props.workflowId}  />
+                    }
                 </>
             }
         </div>

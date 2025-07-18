@@ -8,6 +8,7 @@ import { FileTextIcon, PlayIcon, ShuffleIcon } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import WorkFlowActions from './workflow-actions'
+import RunBtn from './run-btn'
 
 type Props = {
     workflow: Workflow
@@ -39,6 +40,8 @@ const WorkflowCard = (props: Props) => {
             </div>
 
             <div className="flex items-center space-x-2">
+                {props.workflow.status !== WorkflowStatus.DRAFT && <RunBtn workflowId={props.workflow.id}/>}
+
                 <Link href={`/workflow/editor/${props.workflow.id}`} className={cn(buttonVariants({variant: "outline", size: "sm"}), "flex items-center gap-2")}>
                     <ShuffleIcon size={16}/> Edit
                 </Link>
