@@ -13,7 +13,7 @@ const TaskMenu = () => {
             <X size={16} onClick={() => setOpen(false)}/>
         </div>
 
-        <Accordion type="multiple" className='w-full' defaultValue={["extraction"]}>
+        <Accordion type="multiple" className='w-full' defaultValue={["extraction", "interactions", "timing"]}>
 
             <AccordionItem value="extraction">
 
@@ -25,6 +25,31 @@ const TaskMenu = () => {
                 </AccordionContent>
 
             </AccordionItem>
+
+            <AccordionItem value="interactions">
+
+                <AccordionTrigger className='font-bold'>User interactions</AccordionTrigger>
+
+                <AccordionContent className='flex flex-col gap-2'>
+                    <TaskMenuBtn taskType={TaskType.FILL_INPUT}/>
+                    <TaskMenuBtn taskType={TaskType.CLICK_ELEMENT}/>
+                </AccordionContent>
+
+            </AccordionItem>
+
+
+            <AccordionItem value="timing">
+
+                <AccordionTrigger className='font-bold'>TIming controls</AccordionTrigger>
+
+                <AccordionContent className='flex flex-col gap-2'>
+                    <TaskMenuBtn taskType={TaskType.CHECK_FOR_ELEMENT}/>
+                </AccordionContent>
+
+            </AccordionItem>
+
+
+
 
         </Accordion>
     </aside> : <div className='fixed top-2 left-2 p-2 backdrop-blur-xl rounded-md z-50'>

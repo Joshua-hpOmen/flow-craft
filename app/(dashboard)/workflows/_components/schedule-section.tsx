@@ -7,14 +7,15 @@ import { Badge } from '@/components/ui/badge'
 type Props = {
     isDraft: boolean,
     creditsCost: number,
-    workflowId: string
+    workflowId: string,
+    cron: string | null
 }
 
 const ScheduleSection = (props: Props) => {
     if(props.isDraft) return null
   return (
     <div className='flex items-center gap-2'>
-        <CornerDownRight className='h-4 w-4 text-muted-foreground'/><SchedularDialog workflowId={props.workflowId}/>
+        <CornerDownRight className='h-4 w-4 text-muted-foreground'/><SchedularDialog cron={props.cron} workflowId={props.workflowId} key={`${props.cron}-${props.workflowId}`}/>
         <MoveRightIcon className='h-4 w-4 text-muted-foreground'/>
 
         <TooltipWrapper content="Credi consumption for full run">

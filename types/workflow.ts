@@ -40,5 +40,6 @@ export enum ExecutionPhaseStatus {
 }
 
 export enum WokrflowExecutionTrigger {
-    MANUAL = "MANUAL" 
+    MANUAL = "MANUAL",
+    CRON = "CRON" 
 }

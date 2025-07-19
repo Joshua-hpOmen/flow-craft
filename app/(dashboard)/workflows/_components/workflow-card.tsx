@@ -10,6 +10,9 @@ import WorkFlowActions from './workflow-actions'
 import RunBtn from './run-btn'
 import ScheduleSection from './schedule-section'
 import { Workflow } from '@/lib/generated/prisma'
+import LastRunDetails from './last-run-details'
+import DuplicateWorkflowDialog from './duplicate-wrokflow-dialog'
+import TooltipWrapper from '@/components/global/tool-tip-wrapper'
 
 type Props = {
     workflow: Workflow
@@ -22,7 +25,7 @@ const statusColours = {
 
 const WorkflowCard = (props: Props) => {
   return (
-    <Card className='border border-separate shadow-sm rounded-lg overlfow-hidden hover:shadow-md dark:shadow-primary/30'>
+    <Card className='border border-separate shadow-sm rounded-lg overlfow-hidden hover:shadow-md dark:shadow-primary/30 pb-0 group/card'>
 
         <CardContent className='p-4 flex items-center justify-between h-[100px]'>
             <div className='flex items-center justify-end gap-2'>
@@ -33,10 +36,15 @@ const WorkflowCard = (props: Props) => {
 
                 <div className=''>
                     <h3 className='text-base font-bold text-muted-foreground flex items-center'>
-                        <Link href={`/workflow/editor/${props.workflow.id}`} className='flex items-center hover:underline'>{props.workflow.name}</Link>
+                        <TooltipWrapper content={props.workflow.description} >
+                            <Link href={`/workflow/editor/${props.workflow.id}`} className='flex items-center hover:underline'>{props.workflow.name}</Link>
+                        </TooltipWrapper>
                         {props.workflow.status === WorkflowStatus.DRAFT && <span className='ml-2 px-0.5 text-xs font-medium bg-red-100 text-red-800 rounded-full'>Draft</span>}
+
+                        <DuplicateWorkflowDialog workflowId={props.workflow.id}/>
                     </h3>
-                    <ScheduleSection workflowId={props.workflow.id} isDraft={props.workflow.status === WorkflowStatus.DRAFT} creditsCost={props.workflow.creditsCost}/>
+                    <ScheduleSection cron={props.workflow.cron} workflowId={props.workflow.id} 
+                        isDraft={props.workflow.status === WorkflowStatus.DRAFT} creditsCost={props.workflow.creditsCost}/>
                 </div>
 
             </div>
@@ -44,7 +52,8 @@ const WorkflowCard = (props: Props) => {
             <div className="flex items-center space-x-2">
                 {props.workflow.status !== WorkflowStatus.DRAFT && <RunBtn workflowId={props.workflow.id}/>}
 
-                <Link href={`/workflow/editor/${props.workflow.id}`} className={cn(buttonVariants({variant: "outline", size: "sm"}), "flex items-center gap-2")}>
+                <Link href={`/workflow/editor/${props.workflow.id}`} 
+                    className={cn(buttonVariants({variant: "outline", size: "sm"}), "flex items-center gap-2")}>
                     <ShuffleIcon size={16}/> Edit
                 </Link>
 
@@ -52,6 +61,7 @@ const WorkflowCard = (props: Props) => {
             </div>
         </CardContent>
 
+        <LastRunDetails workflow={props.workflow}/>
     </Card>
   )
 }

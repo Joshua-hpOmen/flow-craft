@@ -12,7 +12,7 @@ import { db } from "../prisma";
 import { ExecuterRegistry } from "./executor/registry";
 import { TaskRegistry } from "./task/registry";
 
-const initializeWorkflowExecution = async (executionId:string, workflowId : string ) => {
+const initializeWorkflowExecution = async (executionId:string, workflowId : string, nextRunAt?: Date ) => {
     await db.workflowExecution.update({
         where: {id: executionId},
         data: {
@@ -26,7 +26,8 @@ const initializeWorkflowExecution = async (executionId:string, workflowId : stri
         data: {
             lastRunAt: new Date(),
             lastRunStatus: WorkflowExecutionStatus.RUNNING,
-            lastRunId: executionId
+            lastRunId: executionId,
+            ...(nextRunAt && {nextRunAt})
         }
     })
 }
@@ -113,7 +114,10 @@ const createExecutionEnvironment = (node: AppNode, env: Environment, logCollecto
 
 const executePhase = async (phase: ExecutionPhase, node: AppNode, env: Environment, logCollector: LogCollector): Promise<boolean> => {
     const runFn = ExecuterRegistry[node.data.type]
-    if(!runFn) return false;
+    if(!runFn){
+        logCollector.error("executor not found for: "+ node.data.type)
+        return false;
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const execEnv: ExcecutionEnvironment<any> = createExecutionEnvironment(node, env, logCollector)
@@ -196,14 +200,14 @@ const cleanUpEnv = async (env: Environment) => {
     }
 }
 
-export const ExecuteWorkflow = async (executionId: string) => {
+export const ExecuteWorkflow = async (executionId: string, nextRunAt?: Date) => {
     const execution = await db.workflowExecution.findUnique({ where: {id: executionId }, include: {workflow: true, executionPhases: true} })
     if(!execution) throw new Error("Execution not found");
 
     const env: Environment = {phases: {}};
     const edges = JSON.parse(execution.definition).edges as Edge[]
 
-    await initializeWorkflowExecution(executionId, execution.workflowId)
+    await initializeWorkflowExecution(executionId, execution.workflowId, nextRunAt)
     await initializePhaseStatuses(execution)
 
     

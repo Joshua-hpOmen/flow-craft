@@ -20,6 +20,7 @@ const StringParam = (props: Props) => {
         setInternalVal(props.value)
     }, [props.value])
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let Component : React.FC<any> = Input;
     if(props.param.variant === "textarea"){ Component = Textarea}
   return (
@@ -28,7 +29,7 @@ const StringParam = (props: Props) => {
             {props.param.name}
             {props.param.required && <p className='text-red-800'>*</p>}
         </Label>
-        <Component id={id} className='bg-white' disabled={props.disabled} value={internalVal} onChange={e => setInternalVal(e.target.value)}
+        <Component id={id} className='bg-white' disabled={props.disabled} value={internalVal} onChange={(e: React.ChangeEvent<HTMLInputElement>)  => setInternalVal(e.target.value)}
             onBlur={() => props.updateNodeParamValue(internalVal)} placeholder='Enter value here'/>
 
         {props.param.helperText && <p className='text-muted-foreground px-2 text-xs'>{props.param.helperText}</p>}

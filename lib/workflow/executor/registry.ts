@@ -4,6 +4,9 @@ import { PageToHTMLExecutor } from "./page-to-html-executor";
 import { ExcecutionEnvironment } from "@/types/executor";
 import { WorkflowTask } from "@/types/workflow";
 import { ExtractPageFromElementExecutor } from "./extract-text-from-element-executor";
+import { FillInputExecutor } from "./field-input-executor";
+import { ClickElementExecutor } from "./click-element-executor";
+import { CheckForElementExecutor } from "./check-for-element-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -14,5 +17,8 @@ type RegistoryType = {
 export const ExecuterRegistry: RegistoryType = {
     LAUNCH_BROWSER: LaunchBrowserExecutor,
     PAGE_TO_HTML: PageToHTMLExecutor,
-    EXTRACT_TEXT_FROM_ELEMENT:  ExtractPageFromElementExecutor
+    EXTRACT_TEXT_FROM_ELEMENT:  ExtractPageFromElementExecutor,
+    FILL_INPUT: FillInputExecutor,
+    CLICK_ELEMENT: ClickElementExecutor,
+    CHECK_FOR_ELEMENT: CheckForElementExecutor
 }

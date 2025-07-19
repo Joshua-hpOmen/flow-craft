@@ -6,7 +6,7 @@ export const LaunchBrowserExecutor = async (env: ExcecutionEnvironment<typeof La
     try {
         const websiteUrl = env.getInput("Website Url")
         const browser = await puppeteer.launch({
-            headless: true //for testing purposes
+            headless: false //for testing purposes
         })
 
         env.log.info("Browser statrted successfully")
