@@ -13,7 +13,7 @@ const TaskMenu = () => {
             <X size={16} onClick={() => setOpen(false)}/>
         </div>
 
-        <Accordion type="multiple" className='w-full' defaultValue={["extraction", "interactions", "timing"]}>
+        <Accordion type="multiple" className='w-full' defaultValue={["extraction", "interactions", "timing", "results"]}>
 
             <AccordionItem value="extraction">
 
@@ -44,6 +44,16 @@ const TaskMenu = () => {
 
                 <AccordionContent className='flex flex-col gap-2'>
                     <TaskMenuBtn taskType={TaskType.CHECK_FOR_ELEMENT}/>
+                </AccordionContent>
+
+            </AccordionItem>
+
+            <AccordionItem value="results">
+
+                <AccordionTrigger className='font-bold'>Result Delivery</AccordionTrigger>
+
+                <AccordionContent className='flex flex-col gap-2'>
+                    <TaskMenuBtn taskType={TaskType.DELIVER_VIA_WEBHOOK}/>
                 </AccordionContent>
 
             </AccordionItem>

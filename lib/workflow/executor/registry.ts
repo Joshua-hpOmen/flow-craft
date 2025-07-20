@@ -7,6 +7,7 @@ import { ExtractPageFromElementExecutor } from "./extract-text-from-element-exec
 import { FillInputExecutor } from "./field-input-executor";
 import { ClickElementExecutor } from "./click-element-executor";
 import { CheckForElementExecutor } from "./check-for-element-executor";
+import { DeliverViaWebhookExecutor } from "./delivery-via-webhook-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -20,5 +21,6 @@ export const ExecuterRegistry: RegistoryType = {
     EXTRACT_TEXT_FROM_ELEMENT:  ExtractPageFromElementExecutor,
     FILL_INPUT: FillInputExecutor,
     CLICK_ELEMENT: ClickElementExecutor,
-    CHECK_FOR_ELEMENT: CheckForElementExecutor
+    CHECK_FOR_ELEMENT: CheckForElementExecutor,
+    DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor
 }
