@@ -5,6 +5,7 @@ import { AppNode } from '@/types/app-node'
 import React from 'react'
 import BrowserInstParam from './param/broswer-inst-param'
 import SelectParam from './param/select-param'
+import CredentialParam from './param/credential-param'
 
 type Props = {
     param: TaskParam,
@@ -33,6 +34,8 @@ const NodeParamField = (props: Props) => {
             return <BrowserInstParam param={props.param} updateNodeParamValue={updateNodeParamValue}/>    
         case TaskParamType.SELECT:
             return <SelectParam param={props.param} updateNodeParamValue={updateNodeParamValue} value={value}/>
+        case TaskParamType.CREDENTIAL:
+            return <CredentialParam param={props.param} updateNodeParamValue={updateNodeParamValue} value={value}/>
         default:
             <div className="w-full">
                 <p className="text-xs text-muted-foreground">Not implemented</p>

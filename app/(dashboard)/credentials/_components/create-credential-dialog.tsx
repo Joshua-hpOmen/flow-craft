@@ -47,7 +47,8 @@ const CreateCredentialDialog = (props : Props) => {
     const handleOnSubmit = React.useCallback((values: z.infer<typeof createCredentialSchema>) => {
 
         toast.loading("Creating credential...", {id: "create-credential"});
-        mutate(values)
+        mutate(values);
+        setOpen(false)
 
     }, [mutate])
 

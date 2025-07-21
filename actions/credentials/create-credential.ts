@@ -1,4 +1,5 @@
 "use server"
+import { symmetricEncrypt } from "@/lib/helper/encryption"
 import { db } from "@/lib/prisma"
 import { createCredentialSchema } from "@/schema/credentials"
 import { auth } from "@clerk/nextjs/server"
@@ -12,12 +13,12 @@ export const createCredential = async (values : z.infer<typeof createCredentialS
     const {userId} = await auth();
     if(!userId) throw new Error("unauthorised");
 
-    const encryptedVal = symmetricEncrypt(values.value)
+    const encryptedVal = symmetricEncrypt(values.value);
     const response = await db.credential.create({
         data: {
             userId,
-            name: values.name,
-            value: values.value
+            name: data.name,
+            value: encryptedVal
         }
     })
 
@@ -25,3 +26,4 @@ export const createCredential = async (values : z.infer<typeof createCredentialS
 
     revalidatePath("/credentials")
 }
+

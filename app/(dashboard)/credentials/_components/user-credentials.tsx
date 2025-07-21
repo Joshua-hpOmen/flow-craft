@@ -1,7 +1,9 @@
 import { getCredentialsForUser } from '@/actions/credentials/get-credentials-for-user';
 import { Card } from '@/components/ui/card';
-import { ShieldOffIcon } from 'lucide-react';
+import { LockKeyholeIcon, ShieldOffIcon } from 'lucide-react';
 import CreateCredentialDialog from './create-credential-dialog';
+import { formatDistanceToNow } from 'date-fns';
+import DeleteCredentialDialog from './delete-credential-dialog';
 
 
 const UserCredentials = async () => {
@@ -31,7 +33,28 @@ const UserCredentials = async () => {
         </Card>
     )
   return (
-    <div>UserCredentials</div>
+    <div className='flex gap-2 flex-col'>
+        {
+            credentials.map(credential => {
+
+                const createdAt = formatDistanceToNow(credential.createdAt, {addSuffix: true})
+
+                return <Card key={credential.id} className='flex flex-row w-full p-4 justify-between items-center'>
+                    <div className='flex gap-2 items-center'>
+                        <div className='rounded-full bg-primary/10 w-8 h-8 flex items-center justify-center'>
+                            <LockKeyholeIcon className='stroke-primary' size={18}/>
+                        </div>
+                        <div>
+                            <p className='font-bold'>{credential.name}</p>
+                            <p className='text-xs text-muted-foreground'>{createdAt}</p>
+                        </div>
+                    </div>
+
+                    <DeleteCredentialDialog  credentialName={credential.name} />
+                </Card>
+            })
+        }
+    </div>
   )
 }
 

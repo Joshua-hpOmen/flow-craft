@@ -8,6 +8,7 @@ import { FillInputExecutor } from "./field-input-executor";
 import { ClickElementExecutor } from "./click-element-executor";
 import { CheckForElementExecutor } from "./check-for-element-executor";
 import { DeliverViaWebhookExecutor } from "./delivery-via-webhook-executor";
+import { ExtractDataWithLLMExecutor } from "./extract-data-with-llm-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -22,5 +23,6 @@ export const ExecuterRegistry: RegistoryType = {
     FILL_INPUT: FillInputExecutor,
     CLICK_ELEMENT: ClickElementExecutor,
     CHECK_FOR_ELEMENT: CheckForElementExecutor,
-    DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor
+    DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
+    EXTRACT_DATA_WITH_LLM: ExtractDataWithLLMExecutor
 }
