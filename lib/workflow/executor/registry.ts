@@ -9,6 +9,7 @@ import { ClickElementExecutor } from "./click-element-executor";
 import { CheckForElementExecutor } from "./check-for-element-executor";
 import { DeliverViaWebhookExecutor } from "./delivery-via-webhook-executor";
 import { ExtractDataWithLLMExecutor } from "./extract-data-with-llm-executor";
+import { ReadPropertiesFromJSONExecutor } from "./read-properties-from-json-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -24,5 +25,6 @@ export const ExecuterRegistry: RegistoryType = {
     CLICK_ELEMENT: ClickElementExecutor,
     CHECK_FOR_ELEMENT: CheckForElementExecutor,
     DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
-    EXTRACT_DATA_WITH_LLM: ExtractDataWithLLMExecutor
+    EXTRACT_DATA_WITH_LLM: ExtractDataWithLLMExecutor,
+    READ_PROPERTY_FROM_JSON: ReadPropertiesFromJSONExecutor
 }

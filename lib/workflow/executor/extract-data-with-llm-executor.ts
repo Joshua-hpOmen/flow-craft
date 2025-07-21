@@ -2,6 +2,7 @@ import { ExcecutionEnvironment } from "@/types/executor"
 import { ExtractDataWithLLMTask } from "../task/extract-data-with-llm"
 import { db } from "@/lib/prisma"
 import { symmetricDecrypt } from "@/lib/helper/encryption"
+import { getGroqChatCompletion } from "@/lib/gork instance/grok-instance"
 
 export const ExtractDataWithLLMExecutor = async (env: ExcecutionEnvironment<typeof ExtractDataWithLLMTask>): Promise<boolean> => {
     try {
@@ -35,9 +36,16 @@ export const ExtractDataWithLLMExecutor = async (env: ExcecutionEnvironment<type
             return false
         }
 
-        const mockExtractedData = {};
+        const response = await getGroqChatCompletion(content, prompt)
+        if(!response) {
+            env.log.error("Something went wrong. Prompt failed")
+            return false
+        }
+        env.log.info(`Prompt tokens: ${response[1]}`)
+        env.log.info(`Completion tokens: ${response[2]}`)
 
-        env.setOutput("Extracted data", JSON.stringify(mockExtractedData))
+        const  result = response[0] as string
+        env.setOutput("Extracted data", result)
 
         return true
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

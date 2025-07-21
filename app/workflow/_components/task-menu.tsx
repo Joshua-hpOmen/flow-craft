@@ -13,7 +13,7 @@ const TaskMenu = () => {
             <X size={16} onClick={() => setOpen(false)}/>
         </div>
 
-        <Accordion type="multiple" className='w-full' defaultValue={["extraction", "interactions", "timing", "results"]}>
+        <Accordion type="multiple" className='w-full' defaultValue={["extraction", "interactions", "timing", "results", "storage"]}>
 
             <AccordionItem value="extraction">
 
@@ -38,6 +38,17 @@ const TaskMenu = () => {
 
             </AccordionItem>
 
+
+            <AccordionItem value="storage">
+
+                <AccordionTrigger className='font-bold'>Data storage</AccordionTrigger>
+
+                <AccordionContent className='flex flex-col gap-2'>
+                    <TaskMenuBtn taskType={TaskType.READ_PROPERTY_FROM_JSON}/>
+                    <TaskMenuBtn taskType={TaskType.ADD_PROPERTY_TO_JSON}/>
+                </AccordionContent>
+
+            </AccordionItem>
 
             <AccordionItem value="timing">
 
