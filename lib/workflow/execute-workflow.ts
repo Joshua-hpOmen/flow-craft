@@ -11,7 +11,6 @@ import { createLogCollector } from "../log";
 import { db } from "../prisma";
 import { ExecuterRegistry } from "./executor/registry";
 import { TaskRegistry } from "./task/registry";
-import { waitFor } from "../helper/wait-for";
 
 const initializeWorkflowExecution = async (executionId:string, workflowId : string, nextRunAt?: Date ) => {
     await db.workflowExecution.update({
@@ -69,8 +68,6 @@ const finalizeWorkflowExecution = async  (executionId: string, workflowId: strin
     }).catch(() => {
         //
     })
-
-    await waitFor(3000)
 
 }
 

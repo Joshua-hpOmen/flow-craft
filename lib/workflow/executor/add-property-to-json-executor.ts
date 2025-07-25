@@ -24,7 +24,7 @@ export const AddPropertyToJSONExecutor = async (env: ExcecutionEnvironment<typeo
         const jsonData = JSON.parse(json)
         jsonData[propertyName] = propertyValue;
 
-        env.setOutput("Update JSON", jsonData)
+        env.setOutput("Update JSON", JSON.stringify(jsonData))
 
         
         return true

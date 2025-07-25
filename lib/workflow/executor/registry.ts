@@ -10,6 +10,7 @@ import { CheckForElementExecutor } from "./check-for-element-executor";
 import { DeliverViaWebhookExecutor } from "./delivery-via-webhook-executor";
 import { ExtractDataWithLLMExecutor } from "./extract-data-with-llm-executor";
 import { ReadPropertiesFromJSONExecutor } from "./read-properties-from-json-executor";
+import { AddPropertyToJSONExecutor } from "./add-property-to-json-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -26,5 +27,6 @@ export const ExecuterRegistry: RegistoryType = {
     CHECK_FOR_ELEMENT: CheckForElementExecutor,
     DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
     EXTRACT_DATA_WITH_LLM: ExtractDataWithLLMExecutor,
-    READ_PROPERTY_FROM_JSON: ReadPropertiesFromJSONExecutor
+    READ_PROPERTY_FROM_JSON: ReadPropertiesFromJSONExecutor,
+    ADD_PROPERTY_TO_JSON: AddPropertyToJSONExecutor,
 }
