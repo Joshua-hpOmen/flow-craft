@@ -12,7 +12,7 @@ import UserAvailableCreditsBadge from './user-available-credits-badge'
 
 const routes = [
     {
-        href: "",
+        href: null,
         label: "Home",
         icon: HomeIcon
     },
@@ -35,7 +35,7 @@ const routes = [
 
 const SideBar = () => {
     const pathName = usePathname();
-    const activeRoute= routes.find(route => route.href.length > 0 && pathName.includes(route.href)) || routes[0]
+    const activeRoute= routes.find(route => route.href && pathName.includes(route.href)) || routes[0]
   return (
     <div className='hidden md:!block relative w-[280px] min-h-screen overflow-hidden hover:overflow-y-auto bg-primary/5 dark:bg-secondary/30 dark:text-foreground text-muted-foreground border-r-2 border-separate'>
         <div className='w-full flex items-center justify-center'>
@@ -53,7 +53,7 @@ const SideBar = () => {
 
         <div className="flex flex-col p-2">
             {routes.map((route, index) => (
-                <Link className={buttonVariants({variant: activeRoute.href === route.href ? "sideBarActiveItem": "sideBarItem"})} key={index} href={route.href}>
+                <Link className={buttonVariants({variant: activeRoute.href === route.href ? "sideBarActiveItem": "sideBarItem"})} key={index} href={route.href ?? "/"}>
                     <route.icon size={20}/>
                     {route.label}
                 </Link>
@@ -65,7 +65,7 @@ const SideBar = () => {
 
 export const MobileSideBar = () => {
     const pathName = usePathname();
-    const activeRoute= routes.find(route => route.href.length > 0 && pathName.includes(route.href)) || routes[0]
+    const activeRoute= routes.find(route => route.href && pathName.includes(route.href)) || routes[0]
     const [isOpen, setOpen] = React.useState(false)
     
     return <div className="block border-separate bg-background md:hidden">
@@ -84,7 +84,7 @@ export const MobileSideBar = () => {
                     </div>
                     <div className="flex flex-col gap-1">
                         {routes.map((route, index) => (
-                            <Link className={buttonVariants({variant: activeRoute.href === route.href ? "sideBarActiveItem": "sideBarItem"})} key={index} href={route.href}>
+                            <Link className={buttonVariants({variant: activeRoute.href === route.href ? "sideBarActiveItem": "sideBarItem"})} key={index} href={route.href ?? "/"}>
                                 <route.icon size={20}/>
                                 {route.label}
                             </Link>

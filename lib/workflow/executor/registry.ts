@@ -11,6 +11,8 @@ import { DeliverViaWebhookExecutor } from "./delivery-via-webhook-executor";
 import { ExtractDataWithLLMExecutor } from "./extract-data-with-llm-executor";
 import { ReadPropertiesFromJSONExecutor } from "./read-properties-from-json-executor";
 import { AddPropertyToJSONExecutor } from "./add-property-to-json-executor";
+import { NavigateURlExecutor } from "./navigate-url-executor";
+import { ScrollToElementExecutor } from "./scroll-to-element-executor";
 
 type ExecutorFn<T extends WorkflowTask> = (env: ExcecutionEnvironment<T>) => Promise<boolean>
 
@@ -29,4 +31,6 @@ export const ExecuterRegistry: RegistoryType = {
     EXTRACT_DATA_WITH_LLM: ExtractDataWithLLMExecutor,
     READ_PROPERTY_FROM_JSON: ReadPropertiesFromJSONExecutor,
     ADD_PROPERTY_TO_JSON: AddPropertyToJSONExecutor,
+    NAVIGATE_URL: NavigateURlExecutor,
+    SCROLL_TO_ELEMENT: ScrollToElementExecutor
 }

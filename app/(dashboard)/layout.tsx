@@ -23,7 +23,7 @@ const layout = (props: Props) => {
                 </section>
               </header>
               <Separator/>
-              <div>
+              <div className='flex-1'>
                   {props.children}
               </div>
           </div>

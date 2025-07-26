@@ -34,6 +34,8 @@ const TaskMenu = () => {
                 <AccordionContent className='flex flex-col gap-2'>
                     <TaskMenuBtn taskType={TaskType.FILL_INPUT}/>
                     <TaskMenuBtn taskType={TaskType.CLICK_ELEMENT}/>
+                    <TaskMenuBtn taskType={TaskType.NAVIGATE_URL}/>
+                    <TaskMenuBtn taskType={TaskType.SCROLL_TO_ELEMENT}/>
                 </AccordionContent>
 
             </AccordionItem>

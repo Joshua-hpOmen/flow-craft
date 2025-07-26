@@ -22,7 +22,7 @@ const Topbar = (props: Props) => {
     const router = useRouter()
 
   return (
-    <header className='flex p-2 border-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10'>
+    <header className='flex p-2 border-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10 gap-4'>
         <div className="flex gap-1 flex-1">
 
             <TooltipWrapper content="Back">
