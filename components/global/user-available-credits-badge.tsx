@@ -20,7 +20,7 @@ const UserAvailableCreditsBadge = () => {
         <CoinsIcon size={20} className='text-primary'/>
         <span className='font-semibold capitalize'>
             {query.isLoading && <Loader2Icon className='w-4 h-4 animate-spin' />}
-            {!query.isLoading && query.data  === undefined && "-"}
+            {!query.isLoading && query.data  === undefined && 0}
             {!query.isLoading && query.data && <ReactCountupWrapper value={query.data}/> }
         </span>
     </Link>
