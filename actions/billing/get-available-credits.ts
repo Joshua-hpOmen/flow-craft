@@ -8,6 +8,6 @@ export const getAvailableCredits = async () => {
     if(!userId) throw new Error("unauthorised");
 
     const balance = await db.userBalance.findUnique({ where: { userId }})
-    if(!balance) return -1
+    if(!balance) return undefined
     return balance.credits
 }
