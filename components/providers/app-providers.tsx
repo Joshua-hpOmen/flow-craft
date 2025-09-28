@@ -14,7 +14,7 @@ const AppPorivders = (props: Props) => {
   return (
     <QueryClientProvider client={queryClient}>
       <NextTopLoader color="#8e51ff" showSpinner={false}/>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {props.children}
       </ThemeProvider>
       <ReactQueryDevtools/>
