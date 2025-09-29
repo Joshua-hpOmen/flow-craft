@@ -1,4 +1,3 @@
-import React from 'react'
 import SignInForm from './_components/sign-in-form'
 import Logo from '@/components/global/logo'
 
