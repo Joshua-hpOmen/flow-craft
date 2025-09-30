@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌊 Flow-Craft
 
-## Getting Started
+**Flow-Craft** is your automation ally — a drag-and-drop web scraping and task automation tool designed to save hours of manual work.  
+From repetitive scrapers to scheduled tasks and secure token management, Flow-Craft lets you create powerful automations without the headache.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 🖱️ **Drag & Drop Automation** – Build scrapers and workflows with no hassle.  
+- 🤖 **Flexible Web Scraping** – Boosted with LLMs for smarter data extraction.  
+- ⏰ **Cron Jobs** – Schedule your tasks and let Flow-Craft handle them automatically.  
+- 🔐 **Encrypted Key Management** – Safely onboard tokens without ever exposing them.  
+- 👥 **Collaboration Ready** – Share automations while keeping sensitive data secure.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tech Stack
 
-## Learn More
+- ⚛️ **React + Next.js** – Clean and modern UI.  
+- 🟦 **TypeScript** – Reliable development at scale.  
+- 📡 **TanStack Query** – Efficient data fetching and caching.  
+- 🧠 **Groq AI** – Smarter scraping powered by language models.  
+- 💳 **Stripe** – Subscription and payments built-in.  
+- ⚙️ **Node.js + Prisma + PostgreSQL** – Solid backend for scalability.  
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Why Flow-Craft?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Manual scraping and tedious workflows are a thing of the past.  
+Flow-Craft empowers you to **automate anything repetitive** with drag-and-drop simplicity — so you can focus on insights, not busywork.
